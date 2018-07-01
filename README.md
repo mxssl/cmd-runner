@@ -2,13 +2,17 @@
 
 Run commands over ssh and write stdout to file
 
-# installation
+# install
 
 ```
-git clone cmd-runner
-wget cmd-runner binary
+git clone https://github.com/mxssl/cmd-runner.git
+wget https://github.com/mxssl/cmd-runner/releases/download/0.0.1/cmd-runner
 chmod +x cmd-runner
 ```
+
+# run
+
+`./cmd-runner`
 
 `commands.txt` - list of commands that you want to run on devices
 
