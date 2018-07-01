@@ -1,14 +1,14 @@
 package main
 
 import (
-	"golang.org/x/crypto/ssh"
-	"log"
+	"bufio"
 	"bytes"
+	"golang.org/x/crypto/ssh"
+	"io/ioutil"
+	"log"
+	"os"
 	"sync"
 	"time"
-	"io/ioutil"
-	"os"
-	"bufio"
 )
 
 var LOGIN string
@@ -29,7 +29,7 @@ func main() {
 			ssh.Password(PASSWORD),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Timeout: time.Second * 5,
+		Timeout:         time.Second * 5,
 	}
 	var wg sync.WaitGroup
 	start := time.Now()
@@ -42,7 +42,7 @@ func main() {
 	log.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
 }
 
-func sendCommands(config *ssh.ClientConfig, device string , commands string, wg *sync.WaitGroup){
+func sendCommands(config *ssh.ClientConfig, device string, commands string, wg *sync.WaitGroup) {
 	log.Printf("Running commands on device: %v", device)
 	defer wg.Done()
 	client, err := ssh.Dial("tcp", device, config)
@@ -61,7 +61,7 @@ func sendCommands(config *ssh.ClientConfig, device string , commands string, wg 
 	if err := session.Run(commands); err != nil {
 		log.Println(err)
 	}
-	outputFileName := device[:len(device) -3] + "-output.txt"
+	outputFileName := device[:len(device)-3] + "-output.txt"
 	f, err := os.Create(outputFileName)
 	if err != nil {
 		log.Print(err)
@@ -76,7 +76,7 @@ func sendCommands(config *ssh.ClientConfig, device string , commands string, wg 
 	}
 }
 
-func readCreds () {
+func readCreds() {
 	file, err := os.Open("credentials.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -99,7 +99,7 @@ func readCreds () {
 	}
 }
 
-func readDevices () (devices []string){
+func readDevices() (devices []string) {
 	file, err := os.Open("devices.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -115,7 +115,7 @@ func readDevices () (devices []string){
 	return devices
 }
 
-func readCommands () (commands string){
+func readCommands() (commands string) {
 	b, err := ioutil.ReadFile("commands.txt")
 	if err != nil {
 		log.Print(err)
