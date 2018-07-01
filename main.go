@@ -118,7 +118,7 @@ func readDevices() (devices []string) {
 func readCommands() (commands string) {
 	b, err := ioutil.ReadFile("commands.txt")
 	if err != nil {
-		log.Print(err)
+		log.Fatal(err)
 	}
 	commands = string(b)
 	return commands
