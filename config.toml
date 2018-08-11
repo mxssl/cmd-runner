@@ -1,0 +1,9 @@
+username = "user"
+password = "pass"
+
+hosts = [
+	"1.1.1.1",
+	"2.2.2.2"
+]
+
+commands_file = "commands.txt"
