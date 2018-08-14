@@ -1,9 +1,21 @@
-username = "user"
-password = "pass"
+# Credentials
+username = "root"
+password = "password"
 
+# SSH keys
+ssh_private_key = "/home/user/.ssh/id_rsa"
+ssh_public_key = "/home/user/.ssh/id_rsa.pub"
+
+# Remote hosts
 hosts = [
 	"1.1.1.1",
-	"2.2.2.2"
+	"2.2.2.2",
+	"3.3.3.3"
 ]
 
+# File with commands for "cmd-runner start" command
 commands_file = "commands.txt"
+
+# > Full < source and destination path to file for "cmd-runner copy" command 
+source_path = "/opt/scripts/script.sh"
+destination_path = "/tmp/script.sh"

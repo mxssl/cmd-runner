@@ -38,12 +38,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/mitchellh/go-homedir"
-  packages = ["."]
-  revision = "58046073cbffe2f25d425fe1331102f55cf719de"
-
-[[projects]]
-  branch = "master"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
   revision = "f15292f7a699fcc1a38a80977f80a046874ba8ac"
@@ -95,6 +89,20 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/crypto"
+  packages = [
+    "curve25519",
+    "ed25519",
+    "ed25519/internal/edwards25519",
+    "internal/chacha20",
+    "internal/subtle",
+    "poly1305",
+    "ssh"
+  ]
+  revision = "de0752318171da717af4ce24d0a2e8626afaeb11"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
   revision = "98c5dad5d1a0e8a73845ecc8897d0bd56586511d"
@@ -121,6 +129,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b9babd374c353ad810721a25843d6a8bd24fb8b8b07b601ac9c51b3685a47e32"
+  inputs-digest = "a909f1c95363bb339d66779082f58fc73d0a125db7f8b75c0cf55fe36b71370e"
   solver-name = "gps-cdcl"
   solver-version = 1

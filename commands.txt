@@ -1,2 +1,1 @@
-apt-get update
-apt-get upgrade -y
+bash /tmp/script.sh

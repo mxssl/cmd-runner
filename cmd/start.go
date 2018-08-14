@@ -30,13 +30,19 @@ import (
 
 // Config struct for toml config file
 type Config struct {
-	Username     string   `mapstructure:"username"`
-	Password     string   `mapstructure:"password"`
-	Hosts        []string `mapstructure:"hosts"`
-	CommandsFile string   `mapstructure:"commands_file"`
+	Username        string   `mapstructure:"username"`
+	Password        string   `mapstructure:"password"`
+	Hosts           []string `mapstructure:"hosts"`
+	CommandsFile    string   `mapstructure:"commands_file"`
+	SourcePath      string   `mapstructure:"source_path"`
+	DestinationPath string   `mapstructure:"destination_path"`
+	SSHPrivateKey   string   `mapstructure:"ssh_private_key"`
+	SSHPublicKey    string   `mapstructure:"ssh_public_key"`
 }
 
 var c Config
+
+var file bool
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -50,6 +56,8 @@ var startCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(startCmd)
+
+	startCmd.Flags().BoolVarP(&file, "file", "f", false, "Print remote stdout to file host-output.txt")
 }
 
 func unmarshallCfg() {
@@ -77,27 +85,54 @@ func start() {
 }
 
 func sshRun() {
-	config := &ssh.ClientConfig{
-		User: c.Username,
-		Auth: []ssh.AuthMethod{
-			ssh.Password(c.Password),
-		},
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Timeout:         time.Second * 5,
+
+	// SSH config
+	var Cfg *ssh.ClientConfig
+
+	if c.SSHPrivateKey == "" {
+		log.Println("Authentication using password from configuration file")
+		Cfg = &ssh.ClientConfig{
+			User: c.Username,
+			Auth: []ssh.AuthMethod{
+				ssh.Password(c.Password),
+			},
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+			Timeout:         time.Second * 5,
+		}
+	} else {
+		log.Printf("Authentication using ssh key %v\n", c.SSHPrivateKey)
+		key, err := ioutil.ReadFile(c.SSHPrivateKey)
+		if err != nil {
+			log.Fatalf("Unable to read private key: %v", err)
+		}
+
+		signer, err := ssh.ParsePrivateKey(key)
+		if err != nil {
+			log.Fatalf("Unable to parse private key: %v", err)
+		}
+
+		Cfg = &ssh.ClientConfig{
+			User: c.Username,
+			Auth: []ssh.AuthMethod{
+				ssh.PublicKeys(signer),
+			},
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+			Timeout:         time.Second * 5,
+		}
 	}
 
 	commands := readCommands()
-	log.Printf("Commands: %v", commands)
+	log.Printf("Commands: \n********************\n%v\n********************\n", commands)
 
 	var wg sync.WaitGroup
 	start := time.Now()
 	for k := range c.Hosts {
 		wg.Add(1)
 		host := c.Hosts[k] + ":22"
-		go sendCommands(config, host, commands, &wg)
+		go sendCommands(Cfg, host, commands, &wg)
 	}
 	wg.Wait()
-	log.Printf("%.2fs elapsed\n", time.Since(start).Seconds())
+	log.Printf("Elapsed time: %.2fs\n", time.Since(start).Seconds())
 }
 
 func sendCommands(config *ssh.ClientConfig, host string, commands string, wg *sync.WaitGroup) {
@@ -122,18 +157,22 @@ func sendCommands(config *ssh.ClientConfig, host string, commands string, wg *sy
 		log.Println(err)
 	}
 
-	outputFileName := host[:len(host)-3] + "-output.txt"
-	f, err := os.Create(outputFileName)
-	if err != nil {
-		log.Print(err)
-	}
-	defer func() {
-		if err := f.Close(); err != nil {
-			panic(err)
+	log.Printf("Host: %v Stdout: \n********************\n%v********************\n", host, b.String())
+
+	if file == true {
+		outputFileName := host[:len(host)-3] + "-output.txt"
+		f, err := os.Create(outputFileName)
+		if err != nil {
+			log.Print(err)
 		}
-	}()
-	if _, err := f.WriteString(b.String()); err != nil {
-		log.Print(err)
+		defer func() {
+			if err := f.Close(); err != nil {
+				panic(err)
+			}
+		}()
+		if _, err := f.WriteString(b.String()); err != nil {
+			log.Print(err)
+		}
 	}
 }
 
