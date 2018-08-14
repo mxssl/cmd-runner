@@ -1,6 +1,6 @@
 # cmd-runner
 
-Asynchronously run commands on remote hosts over ssh
+Execute commands on remote hosts asynchronously over ssh
 
 ## Installation
 
