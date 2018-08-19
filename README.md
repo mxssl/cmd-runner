@@ -80,6 +80,6 @@ cmd-runner start --file
 
 ### Usecase 3
 
-#### Combine Usecase 1 and Usecase 3
+#### Combine Usecase 1 and Usecase 2
 
 You can copy bash script to remote hosts with `cmd-runner copy` and run this script with `cmd-runner start`
