@@ -84,8 +84,7 @@ func scp(host string) {
 	args := []string{}
 
 	dst := fmt.Sprintf(c.Username + "@" + host + ":" + DestinationPath)
-	port := fmt.Sprintf(":" + c.SSHPort)
-	args = append(args, "-P", port, "-i", c.SSHPublicKey, SourcePath, dst)
+	args = append(args, "-P", c.SSHPort, "-i", c.SSHPublicKey, SourcePath, dst)
 
 	log.Printf("Host: %v Copying local file: %v to remote file: %v ...\n", host, SourcePath, DestinationPath)
 	out, err := exec.Command("scp", args...).Output()
