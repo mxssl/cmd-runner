@@ -6,14 +6,14 @@ Execute commands on remote hosts asynchronously over ssh
 
 Download compiled binary for your system
 
-[Linux](https://github.com/mxssl/cmd-runner/releases/download/0.0.3/cmd-runner-linux-amd64)
+[Linux](https://github.com/mxssl/cmd-runner/releases/download/0.0.4/cmd-runner-linux-amd64)
 
-[MacOS](https://github.com/mxssl/cmd-runner/releases/download/0.0.3/cmd-runner-darwin-amd64)
+[MacOS](https://github.com/mxssl/cmd-runner/releases/download/0.0.4/cmd-runner-darwin-amd64)
 
 Example
 
 ```bash
-wget https://github.com/mxssl/cmd-runner/releases/download/0.0.3/cmd-runner-linux-amd64 -O cmd-runner
+wget https://github.com/mxssl/cmd-runner/releases/download/0.0.4/cmd-runner-linux-amd64 -O cmd-runner
 mv cmd-runner /usr/local/bin/cmd-runner
 chmod +x /usr/local/bin/cmd-runner/cmd-runner
 ```
