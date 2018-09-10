@@ -30,14 +30,16 @@ import (
 
 // Config struct for toml config file
 type Config struct {
-	Username        string   `mapstructure:"username"`
-	Password        string   `mapstructure:"password"`
-	Hosts           []string `mapstructure:"hosts"`
-	CommandsFile    string   `mapstructure:"commands_file"`
-	SourcePath      string   `mapstructure:"source_path"`
-	DestinationPath string   `mapstructure:"destination_path"`
-	SSHPrivateKey   string   `mapstructure:"ssh_private_key"`
-	SSHPublicKey    string   `mapstructure:"ssh_public_key"`
+	Username         string   `mapstructure:"username"`
+	Password         string   `mapstructure:"password"`
+	Hosts            []string `mapstructure:"hosts"`
+	CommandsFile     string   `mapstructure:"commands_file"`
+	SourcePath       string   `mapstructure:"source_path"`
+	DestinationPath  string   `mapstructure:"destination_path"`
+	SSHPrivateKey    string   `mapstructure:"ssh_private_key"`
+	SSHPublicKey     string   `mapstructure:"ssh_public_key"`
+	SSHPort          string   `mapstructure:"ssh_port"`
+	ConnectionMethod string   `mapstructure:"connection_method"`
 }
 
 var c Config
@@ -89,7 +91,7 @@ func sshRun() {
 	// SSH config
 	var Cfg *ssh.ClientConfig
 
-	if c.SSHPrivateKey == "" {
+	if c.ConnectionMethod == "password" {
 		log.Println("Authentication using password from configuration file")
 		Cfg = &ssh.ClientConfig{
 			User: c.Username,
@@ -99,7 +101,7 @@ func sshRun() {
 			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 			Timeout:         time.Second * 5,
 		}
-	} else {
+	} else if c.ConnectionMethod == "key" {
 		log.Printf("Authentication using ssh key %v\n", c.SSHPrivateKey)
 		key, err := ioutil.ReadFile(c.SSHPrivateKey)
 		if err != nil {
@@ -119,16 +121,19 @@ func sshRun() {
 			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 			Timeout:         time.Second * 5,
 		}
+	} else {
+		log.Println(`Please select connection method "password" or " key" in the configuration file`)
 	}
 
 	commands := readCommands()
+	sshPortForCommands := fmt.Sprintf(":" + c.SSHPort)
 	log.Printf("Commands: \n********************\n%v\n********************\n", commands)
 
 	var wg sync.WaitGroup
 	start := time.Now()
 	for k := range c.Hosts {
 		wg.Add(1)
-		host := c.Hosts[k] + ":22"
+		host := c.Hosts[k] + sshPortForCommands
 		go sendCommands(Cfg, host, commands, &wg)
 	}
 	wg.Wait()

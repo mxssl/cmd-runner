@@ -2,9 +2,15 @@
 username = "root"
 password = "password"
 
-# SSH keys
+# SSH private and public keys
 ssh_private_key = "/home/user/.ssh/id_rsa"
 ssh_public_key = "/home/user/.ssh/id_rsa.pub"
+
+# SSH port
+ssh_port = "22"
+
+# Connection method: "key" or "password"
+connection_method = "key"
 
 # Remote hosts
 hosts = [
