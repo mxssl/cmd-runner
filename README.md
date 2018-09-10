@@ -30,12 +30,18 @@ Example:
 
 ```toml
 # Credentials
-username = "username"
+username = "root"
 password = "password"
 
-# SSH keys
+# SSH private and public keys
 ssh_private_key = "/home/user/.ssh/id_rsa"
 ssh_public_key = "/home/user/.ssh/id_rsa.pub"
+
+# SSH port
+ssh_port = "22"
+
+# Connection method: "key" or "password"
+connection_method = "key"
 
 # Remote hosts
 hosts = [
@@ -47,7 +53,7 @@ hosts = [
 # File with commands for "cmd-runner start" command
 commands_file = "commands.txt"
 
-# > Full < source and destination path to file for "cmd-runner copy" command
+# > Full < source and destination path to file for "cmd-runner copy" command 
 source_path = "/opt/scripts/script.sh"
 destination_path = "/tmp/script.sh"
 ```
