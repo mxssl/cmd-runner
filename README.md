@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/mxssl/cmd-runner/blob/master/cmd-runner-logo.png">
+</p>
+
 # cmd-runner
 
 Execute commands on remote hosts asynchronously over ssh
